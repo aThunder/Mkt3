@@ -22,14 +22,15 @@ import buildSeriesM
 ##########################################
 class Settings():
 
-    def __init__(self, symbol, dfFullSet):
+    def __init__(self, symbol, dfFullSet,endDate):
         self.symbol = symbol
         self.dfFullSet = dfFullSet
+        self.endDate = endDate
         self.daysAvailable = self.dfFullSet['date'].count()
 
 #################wwwwwwwwwwwwww###############
 class VolUpDown(Settings):
-    ##Include the following 4 defs
+    ##Includes the following 4 defs
     ##a.priceVolStats()
     ## a.onBalanceVolume()
     ## a.avgVolumeUpDown()
@@ -43,24 +44,15 @@ class VolUpDown(Settings):
         self.daysToReport = int(input("How Many Days To Include In Report (1-{0})? ".format(self.daysAvailable-1)))
         self.daysToReportN = self.daysToReport * -1
 
+        print()
+        print("ENDING DATE: ", self.endDate)
     def priceVolStats(self):
         self.dfFullSet['changeClose'] = self.dfFullSet['close'].diff()
 
         self.volMaskUp = self.dfFullSet['close'].diff() >= 0
         self.volMaskDn = self.dfFullSet['close'].diff() < 0
-        # self.upMean = self.dfSubSet[self.volMaskUp].describe()
+        # self.upMean = self.dfFullSet[self.volMaskUp].describe()
         # print("upMean: ",self.upMean)
-        # print("volMask: ", volMaskUp)
-        # gains = self.dfSubSet[volMaskUp]
-        # print("Gains: ", gains, gains.count())
-        # print("{0} Days of Tests For {1}".format(self.daysToReport,self.symbol.upper()))
-        # print("Through ", self.dfFullSet['date'][-1:])
-        # print()
-        # print("UpDays: ")
-        # print("Count: ",self.volMaskUp[self.includeInResults:].count())
-        # print()
-        # print("DownDays: ")
-        # print("Count: ", self.dfFullSet[self.volMaskDn]['close'][self.includeInResults:].count())
 
     ##Original Iteration for OBV included checking entire dataframe
     # def onBalanceVolume(self):
@@ -77,11 +69,9 @@ class VolUpDown(Settings):
     #         if i > 0 and counter > (self.dfFullSet['date'].count() - 1 - self.daysToReport):
     #             print("PLUS")
     #             self.runningVol += self.dfFullSet['vol'][counter]
-    #             # print("OBVPlus: ", self.dfSubSet['date'][counter],self.runningVol)
     #         elif i < 0 and counter > (self.dfFullSet['date'].count() - 1 - self.daysToReport):
     #             print("MINUS")
     #             self.runningVol -= self.dfFullSet['vol'][counter]
-    #             # print("OBVMinus: ", self.dfSubSet['date'][counter],self.runningVol)
     #
     #         obvFirstLast.append(self.runningVol)
     #         counter += 1
@@ -111,21 +101,16 @@ class VolUpDown(Settings):
             if i > 0 and counter > (self.dfFullSet['date'].count() - 1 - self.daysToReport):
                 # print("PLUS")
                 self.runningVol += self.dfFullSet['vol'][counter]
-                # print("OBVPlus: ", self.dfSubSet['date'][counter],self.runningVol)
             elif i < 0 and counter > (self.dfFullSet['date'].count() - 1 - self.daysToReport):
                 # print("MINUS")
                 self.runningVol -= self.dfFullSet['vol'][counter]
-                # print("OBVMinus: ", self.dfSubSet['date'][counter],self.runningVol)
 
             obvFirstLast.append(self.runningVol)
             counter += 1
 
-        # firstOBV = obvFirstLast[0]
-        # print("TEST: ", (self.dfFullSet['date'].count() - 1 - self.daysToReport))
         firstOBV = obvFirstLast[0]
         lastOBV = obvFirstLast[-1]
         print()
-        # print("OBVList: ", obvFirstLast)
         print("OBV:first,last: ", firstOBV, lastOBV)
         print("OBV Change From {0} days prior: {1}".format(self.daysToReport, lastOBV - firstOBV))
         print()
@@ -138,7 +123,6 @@ class VolUpDown(Settings):
         totalDn = 0
         totalUnchanged = 0
         counter = (self.dfFullSet['date'].count() - 1 - self.daysToReport)
-        # print("counter: ", counter)
         print()
 
         self.daysToReportasMinus = self.daysToReport * -1
@@ -188,7 +172,7 @@ class VolUpDown(Settings):
             print("Ratio of Up:Down Volume Days N/A")
             print()
 
-
+        ## provides separate info on unchanged days; probably will delete
         # for i in self.unchangedVol:
         #     totalUnchanged += i
         # try:
@@ -206,7 +190,6 @@ class VolUpDown(Settings):
 
     def priceMove(self):
         print()
-        # print("XXXXX: ", self.dfSubSet)
         print("{0} days Price Observations: ".format(self.daysToReport))
         firstPrice = self.dfFullSet['close'][self.daysAvailable- 1 -self.daysToReport]
         mostRecentPrice = self.dfFullSet['close'][self.daysAvailable-1]
@@ -256,6 +239,9 @@ class VolMovAvg(Settings):
     def movAvg(self):
         self.daysToReport = self.daysToReport * -1
         self.dfFullSet['rolling'] = pd.rolling_mean(self.dfFullSet['vol'], self.movAvgLen)
+        print()
+        print("ENDING DATE: ", self.endDate)
+        print()
         print("{0}-day moving average for {1} is".format(self.movAvgLen, self.symbol))
         print(self.dfFullSet[['date', 'rolling']][self.daysToReport:])
 
@@ -268,10 +254,6 @@ class VolStkToMktRatios(Settings):
     def specifyDays(self):
         self.movAvgLen = int(input("Moving Average Length (2-{0} days)? ".format(self.daysAvailable)))
         print()
-        # if self.movAvgLen <= self.daysAvailable:
-        #     return True
-        # else:
-        #     print("ERROR: You entered a number greater than {0}".format(self.daysAvailable))
         print()
         self.daysToReportRatios = int(input("How many days to  include in report (1-{0})?: ".format(self.daysAvailable-self.movAvgLen)))
         self.daysToReportRatiosAsMinus = self.daysToReportRatios * -1
@@ -329,6 +311,9 @@ class VolStkToMktRatios(Settings):
         try:
             # upAvg = totalUp/len(self.upVol) # redundant with the np.mean line below
             # print('upVolumeMean: ', upAvg)
+            print()
+            print("ENDING DATE: ", self.endDate)
+            print()
             print("Results calculated for {0} days of data".format(self.daysToReportRatios))
             print("{0}-day MovingAvgs used for comparisons".format(self.movAvgLen))
             print()
@@ -370,24 +355,24 @@ def main(choice,symbol,daysAvailable,endDate):
     print("SYMBOL: ", symbol.upper())
     print()
     if choice == 1:
-        choice1(symbol,dfFullSet)
+        choice1(symbol,dfFullSet,endDate)
     elif choice == 2:
-        choice2(symbol,daysAvailable,dfFullSet)
+        choice2(symbol,daysAvailable,dfFullSet,endDate)
     elif choice == 3:
         choice3(symbol,daysAvailable,dfFullSet,endDate)
 
-def choice1(symbol,dfFullSet):
-    a = Settings(symbol, dfFullSet)
-    upDn1 = VolUpDown(symbol, dfFullSet)
+def choice1(symbol,dfFullSet,endDate):
+    a = Settings(symbol, dfFullSet,endDate)
+    upDn1 = VolUpDown(symbol, dfFullSet,endDate)
     upDn1.specifyDaysToReport()
     upDn1.priceVolStats()
     upDn1.onBalanceVolume()
     upDn1.avgVolumeUpDown()
     upDn1.priceMove()
 
-def choice2(symbol,daysAvailable,dfFullSet):
-    a = Settings(symbol,dfFullSet)
-    b = VolMovAvg(symbol,dfFullSet)
+def choice2(symbol,daysAvailable,dfFullSet,endDate):
+    a = Settings(symbol,dfFullSet,endDate)
+    b = VolMovAvg(symbol,dfFullSet,endDate)
     movAvgLen = False
     checkLen = False
 
@@ -400,15 +385,15 @@ def choice2(symbol,daysAvailable,dfFullSet):
         if checkLen:
             b.movAvg()
         else:
-            choice2(symbol, daysAvailable,dfFullSet)
+            choice2(symbol,daysAvailable,dfFullSet,endDate)
     else:
-        choice2(symbol,daysAvailable,dfFullSet)
+        choice2(symbol,daysAvailable,dfFullSet,endDate)
 
 def choice3(symbol,daysAvailable,dfFullSet,endDate):
-    a = Settings(symbol,dfFullSet)
+    a = Settings(symbol,dfFullSet,endDate)
     import buildSeriesM
     dfOverallMktSet = buildSeriesM.overallMkt(symbol,endDate)
-    ratios1 = VolStkToMktRatios(symbol,dfFullSet)
+    ratios1 = VolStkToMktRatios(symbol,dfFullSet,endDate)
     ratios1.specifyDays()
     ratios1.vsOverallVolume(dfOverallMktSet)
     ratios1.vsOverallVolumeUpDownAvg()

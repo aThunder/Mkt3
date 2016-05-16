@@ -87,12 +87,12 @@ class DetermineAvailableDates():
 
     def chooseEndingDate(self):
         print("Current Ending Date: {0}".format(self.dfFullSet['date'][self.countRowsFullSet-1]))
-        endDateChoice = input("Enter Different Date (YYYY-MM-DD) or Press Return To Leave Unchanged: ")
-        if endDateChoice == '':
+        self.endDateChoice = input("Enter Different Date (YYYY-MM-DD) or Press Return To Leave Unchanged: ")
+        if self.endDateChoice == '':
             print('Unchanged')
             return self.dfFullSet['date'][self.countRowsFullSet-1]
         else:
-            return endDateChoice
+            return self.endDateChoice
 
     # def returnFullSet(self):
     #     return self.dfFullSet
