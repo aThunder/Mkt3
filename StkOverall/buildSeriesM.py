@@ -45,7 +45,7 @@ class QueryData():
             #                                    "ORDER BY DATE ASC "
             #                                    " ".format(self.symbol), self.diskEngine)
 
-            self.dfFullSet = pd.read_sql_query("SELECT SYMBOL,DATE,CLOSE,VOL "
+            self.dfFullSet = pd.read_sql_query("SELECT SYMBOL,DATE,HIGH,LOW,CLOSE,VOL "
                                                "FROM (SELECT * FROM SymbolsDataDaily "
                                                "WHERE SYMBOL IN ('{0}') "
                                                "AND DATE <= '{1}' "
@@ -78,7 +78,7 @@ class QueryData():
         # print("Self df3: ", self.dfFull3[3:4])
 
         try:
-            self.dfSubSet = pd.read_sql_query("SELECT SYMBOL,DATE,CLOSE,VOL "
+            self.dfSubSet = pd.read_sql_query("SELECT SYMBOL,DATE,HIGH,LOW,CLOSE,VOL "
                                                    "FROM (SELECT * FROM SymbolsDataDaily "
                                                    "WHERE SYMBOL IN ('{0}')"
                                                    "ORDER BY DATE DESC LIMIT {1}) "
@@ -122,7 +122,7 @@ class QueryData():
             #                                          " ".format(self.symbolMkt),
             #                                          self.diskEngine)
 
-            self.dfOverallMktSet = pd.read_sql_query("SELECT SYMBOL,DATE,CLOSE,VOL "
+            self.dfOverallMktSet = pd.read_sql_query("SELECT SYMBOL,DATE,HIGH,LOW,CLOSE,VOL "
                                                      "FROM (SELECT * FROM SymbolsDataDaily "
                                                      "WHERE SYMBOL IN ('{0}') "
                                                      "AND DATE <= '{1}' "
