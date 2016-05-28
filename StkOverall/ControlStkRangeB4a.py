@@ -12,7 +12,7 @@
 # import numpy as np
 # import matplotlib.pyplot as plt
 # from sqlalchemy import create_engine
-import stkRangeAllTestsB3a
+import stkRangeAllTestsB4a
 import determineDates
 
 class RangeDates():
@@ -51,10 +51,10 @@ class IndicatorsVolume(RangeDates):
             return choice1
 
     def callStkRangePosition(self,symbol1,numberAvailableDays,endDate):
-        stkRangeAllTestsB3a.main(1,symbol1,numberAvailableDays,endDate)
+        stkRangeAllTestsB4a.main(1,symbol1,numberAvailableDays,endDate)
 
     def callStkPivots(self, symbol1, numberAvailableDays, endDate):
-        stkRangeAllTestsB3a.main(2, symbol1, numberAvailableDays, endDate)
+        stkRangeAllTestsB4a.main(2, symbol1, numberAvailableDays, endDate)
 
 def main():
     print()

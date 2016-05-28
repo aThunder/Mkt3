@@ -12,7 +12,7 @@
 # import numpy as np
 # import matplotlib.pyplot as plt
 # from sqlalchemy import create_engine
-import stkVolumeAllTestsB3a
+import stkVolumeAllTestsB4a
 import determineDates
 
 class VolumeDates():
@@ -28,9 +28,7 @@ class VolumeDates():
         # print("EndDate?: ",determineDatesListV)
         return determineDatesListV
 
-
-
-class IndicatorsVolume(VolumeDates):
+class IndicatorsVolume():
 
     def chooseIndicators(self):
         try:
@@ -51,14 +49,14 @@ class IndicatorsVolume(VolumeDates):
             return choice1
 
     def callStkVolumeUpDown(self,symbol1,numberAvailableDays,endDate):
-        stkVolumeAllTestsB3a.main(1,symbol1,numberAvailableDays,endDate)
+        stkVolumeAllTestsB4a.main(1,symbol1,numberAvailableDays,endDate)
 
     def callStkVolumeMovAvgs(self, symbol1, numberAvailableDays,endDate):
         print()
-        stkVolumeAllTestsB3a.main(2,symbol1,numberAvailableDays,endDate)
+        stkVolumeAllTestsB4a.main(2,symbol1,numberAvailableDays,endDate)
     def callStkVolumeMktRto(self, symbol1, numberAvailableDays,endDate):
         print()
-        stkVolumeAllTestsB3a.main(3, symbol1,numberAvailableDays,endDate)
+        stkVolumeAllTestsB4a.main(3, symbol1,numberAvailableDays,endDate)
 
 def main():
     print()
@@ -78,7 +76,7 @@ def main():
 def buildIndicators(i,datesResults):
     print ("DR@: ", datesResults)
     print()
-    b = IndicatorsVolume(i)
+    b = IndicatorsVolume()
     choice1 = b.chooseIndicators()
 
     if choice1 == 1:
