@@ -14,7 +14,6 @@ import pandas as pd
 import numpy as np
 import buildSeriesM
 # import matplotlib.pyplot as plt
-# from sqlalchemy import create_engine
 
 ##########################################
 class Settings():
@@ -72,29 +71,49 @@ class Settings():
         self.currentPrice = i
         print("STILL IN SETTINGS!!!!!!")
 
+    def specifyDaysMovAvgI(self):
+        try:
+            print()
+            self.movAvgLen = int(
+                input("Moving Average Length (1-{0})? ".format(self.daysAvailable)))
+            self.movAvgLenN = self.movAvgLen * -1
+            print()
+            if self.movAvgLen <= self.daysAvailable:
+                print("OK, {0} is a valid moving average length".format(self.movAvgLen))
+                print("ENDING DATE: ", self.endDate)
+                print()
+            else:
+                print("{0} is NOT a valid moving average length. TRY AGAIN".format(self.movAvgLen))
+                Settings.specifyDaysMovAvgI(self)
+        except:
+            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
+            Settings.specifyDaysMovAvgI(self)
+
+    def specifyDaysToReportI(self):
+        try:
+            print()
+            self.daysToReport = int(
+                input("How Many Days To Include In Report (1-{0})? ".format(self.daysAvailable - 1)))
+            self.daysToReportN = self.daysToReport * -1
+            print()
+            if self.daysToReport <= self.daysAvailable:
+                print("OK, {0} is a valid report length".format(self.daysToReport))
+                print("ENDING DATE: ", self.endDate)
+                print()
+            else:
+                print("{0} is NOT a valid report length. TRY AGAIN".format(self.daysToReport))
+                Settings.specifyDaysToReportI(self)
+        except:
+            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
+            Settings.specifyDaysToReportI(self)
+
+
 #################wwwwwwwwwwwwww###############
 class StkRangePosition(Settings):
 
     # def __init__(self, symbol, dfFullSet):
     #     self.symbol = "aaaaaaa"  # symbol
     #     self.dfFullSet = "HEY"  # dfFullSet
-
-    def specifyDaysToReport(self):
-        try:
-            print()
-            self.daysToReport = int(input("Enter Range Length to Check (1-{0})? ".format(self.daysAvailable)))
-            self.daysToReportN = self.daysToReport * -1
-            print()
-            if self.daysToReport <= self.daysAvailable:
-                print("OK, {0} is a valid range length".format(self.daysToReport))
-                print("ENDING DATE: ", self.endDate)
-                print()
-            else:
-                print("{0} is NOT a valid range length. TRY AGAIN".format(self.daysToReport))
-                StkRangePosition.specifyDaysToReport(self)
-        except:
-            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
-            StkRangePosition.specifyDaysToReport(self)
 
     def rangeSummary(self):
         print()
@@ -135,23 +154,6 @@ class StkRangePosition(Settings):
         # return
 
 class StkPivots(Settings):
-
-    def specifyDays(self):
-        try:
-            print()
-            self.daysToReport = int(input("Number of Days for Pivots Base (1-{0})? ".format(self.daysAvailable)))
-            self.daysToReportN = self.daysToReport * -1
-            print()
-            if self.daysToReport <= self.daysAvailable:
-                print("OK, {0} is a valid base length".format(self.daysToReport))
-                print("ENDING DATE: ", self.endDate)
-                print()
-            else:
-                print("{0} is NOT a valid range length. TRY AGAIN".format(self.daysToReport))
-                StkPivots.specifyDays(self)
-        except:
-            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
-            StkPivots.specifyDays(self)
 
     def rangeClose(self):
             self.close4Pivot = self.dfFullSet['close'][self.daysAvailable-1]
@@ -194,7 +196,7 @@ def choice1(symbol,dfFullSet,endDate):
 
     ##OR
     range1 = StkRangePosition(symbol,dfFullSet,endDate)
-    range1.specifyDaysToReport()
+    range1.specifyDaysToReportI()
     range1.rangeHigh()
     range1.rangeLow()
     range1.rangeHighLow()
@@ -203,9 +205,8 @@ def choice1(symbol,dfFullSet,endDate):
     range1.rangeStats()
 
 def choice2(symbol,dfFullSet,endDate):
-    b = Settings(symbol,dfFullSet,endDate)
     pivots1 = StkPivots(symbol,dfFullSet,endDate)
-    pivots1.specifyDays()
+    pivots1.specifyDaysToReportI()
     pivots1.rangeHigh()
     pivots1.rangeLow()
     pivots1.rangeClose()

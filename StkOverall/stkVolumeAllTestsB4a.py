@@ -75,29 +75,6 @@ class VolUpDown(Settings):
     #     self.symbol = "aaaaaaa"  # symbol
     #     self.dfFullSet = "HEY"  # dfFullSet
 
-    # def specifyDaysToReport(self):
-    #     self.daysToReport = int(input("How Many Days To Include In Report (1-{0})? ".format(self.daysAvailable-1)))
-    #     self.daysToReportN = self.daysToReport * -1
-    #     print()
-    #     print("ENDING DATE: ", self.endDate)
-
-    def specifyDaysToReport(self):
-        try:
-            print()
-            self.daysToReport = int(input("How Many Days To Include In Report (1-{0})? ".format(self.daysAvailable - 1)))
-            self.daysToReportN = self.daysToReport * -1
-            print()
-            if self.daysToReport <= self.daysAvailable:
-                print("OK, {0} is a valid range length".format(self.daysToReport))
-                print("ENDING DATE: ", self.endDate)
-                print()
-            else:
-                print("{0} is NOT a valid range length. TRY AGAIN".format(self.daysToReport))
-                VolUpDown.specifyDaysToReport(self)
-        except:
-            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
-            VolUpDown.specifyDaysToReport(self)
-
     def priceVolStats(self):
         self.dfFullSet['changeClose'] = self.dfFullSet['close'].diff()
         self.volMaskUp = self.dfFullSet['close'].diff() >= 0
@@ -213,44 +190,6 @@ class VolMovAvg(Settings):
 #         self.dfFullSet = dfFullSet
 #         self.daysAvailable = self.dfFullSet['date'].count()
 
-    def specifyMovAvgLen(self):
-        try:
-            self.movAvgLen = int(input("Moving Average Length (1-{0} days)? ".format(self.daysAvailable)))
-            print(self.movAvgLen,type(self.movAvgLen))
-            if self.movAvgLen <= self.daysAvailable:
-                return True
-            else:
-                print("{0} is NOT a valid range length. TRY AGAIN".format(self.movAvgLen))
-                print()
-                return False
-        except:
-            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
-            return False
-
-    def specifyReportLength(self):
-        try:
-            if self.movAvgLen < self.daysAvailable:
-                self.daysToReport = int(input("Include How Many Days in Report (1-{0})? "
-                                              .format(self.daysAvailable - self.movAvgLen)))
-
-            ## only 1 data point can be reported if the following is true
-            elif self.movAvgLen == self.daysAvailable:
-                self.daysToReport = self.daysAvailable
-        except:
-            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN")
-            VolMovAvg.specifyReportLength(self)
-
-    def checkReportLength(self):
-        if self.daysToReport <= (self.daysAvailable - self.movAvgLen):
-            return True
-        else:
-            print("ERROR: Your Report Length Request exceeds the {0} Available Days"
-                                        .format(self.daysAvailable-self.movAvgLen))
-            print("Try Again FROM THE BEGINNING")
-            print()
-            daysAvailable = self.daysAvailable - self.movAvgLen
-            return False
-
     def movAvg(self):
         self.daysToReport = self.daysToReport * -1
         self.dfFullSet['rolling'] = pd.rolling_mean(self.dfFullSet['vol'], self.movAvgLen)
@@ -265,27 +204,6 @@ class VolStkToMktRatios(Settings):
     ##includes:
     ## vsOverallVolume
     ##vsOverallVolumeUpDownAvg
-
-    def specifyDays(self):
-        try:
-            self.movAvgLen = int(input("Moving Average Length (2-{0} days)? ".format(self.daysAvailable)))
-            if self.movAvgLen <= self.daysAvailable:
-                print()
-                self.daysToReportRatios = int(input("How many days to include in report (1-{0})?: ".format(self.daysAvailable-self.movAvgLen)))
-                if self.daysToReportRatios <= self.daysAvailable - self.movAvgLen:
-                    self.daysToReportRatiosAsMinus = self.daysToReportRatios * -1
-                else:
-                    print("{0} is NOT a valid Report Length. TRY AGAIN FROM THE BEGINNING".format(self.daysToReportRatios))
-                    VolStkToMktRatios.specifyDays(self)
-
-            else:
-                print("{0} is NOT a valid Moving Average Length. TRY AGAIN".format(self.movAvgLen))
-                VolStkToMktRatios.specifyDays(self)
-
-        except:
-            print("THAT WASN'T EVEN A NUMBER...TRY AGAIN FROM THE BEGINNING")
-            VolStkToMktRatios.specifyDays(self)
-
 
     def vsOverallVolume(self,dfOverallMktSet):
         self.dfOverallMktSet = dfOverallMktSet
@@ -384,9 +302,7 @@ def main(choice,symbol,daysAvailable,endDate):
         choice3(symbol,daysAvailable,dfFullSet,endDate)
 
 def choice1(symbol,dfFullSet,endDate):
-    # a = Settings(symbol, dfFullSet,endDate)
     upDn1 = VolUpDown(symbol, dfFullSet,endDate)
-    # upDn1.specifyDaysToReport()
     upDn1.specifyDaysToReportI()
     upDn1.priceVolStats()
     upDn1.onBalanceVolume()
@@ -394,30 +310,15 @@ def choice1(symbol,dfFullSet,endDate):
     upDn1.priceMove()
 
 def choice2(symbol,daysAvailable,dfFullSet,endDate):
-    # a = Settings(symbol,dfFullSet,endDate)
     b = VolMovAvg(symbol,dfFullSet,endDate)
-    movAvgLen = False
-    checkLen = False
-    movAvgLen = b.specifyDaysMovAvgI()
-    reportLen = b.specifyDaysToReportI()
+    b.specifyDaysMovAvgI()
+    b.specifyDaysToReportI()
     b.movAvg()
 
-    # if movAvgLen:
-    #     b.specifyReportLength()
-    #     checkLen = b.checkReportLength()
-    #     if checkLen:
-    #         b.movAvg()
-    #     else:
-    #         choice2(symbol,daysAvailable,dfFullSet,endDate)
-    # else:
-    #     choice2(symbol,daysAvailable,dfFullSet,endDate)
-
 def choice3(symbol,daysAvailable,dfFullSet,endDate):
-    # a = Settings(symbol,dfFullSet,endDate)
     import buildSeriesM
     dfOverallMktSet = buildSeriesM.overallMkt(symbol,endDate)
     ratios1 = VolStkToMktRatios(symbol,dfFullSet,endDate)
-    # ratios1.specifyDays()
     ratios1.specifyDaysMovAvgI()
     ratios1.specifyDaysToReportI()
     ratios1.vsOverallVolume(dfOverallMktSet)

@@ -6,7 +6,6 @@
        (such as from stkVolumeAllTestsB3.py)
     2. Returns the dataframe to file(s) submitting the request
 '''
-
 import sqlite3
 import pandas as pd
 import numpy as np
@@ -180,28 +179,21 @@ def main(symbol,endDate):
 
 def overallMkt(symbol,endDate):
     a = QueryData()
-    # criteria5 = ['%S&P%','%Gold%','%Bond%','%Oil%']
-    # criteria5 = ['aapl'] #,';dssdf','spy'] #,'sl;dfk','spy'] #,'mmm','gld']
     criteria5 = [symbol]
     print()
 
     for i in criteria5:
         a.setSettings(i,99)
-        # fullSet1 = a.retrieveFullSet()
-        # subSet1 = a.retrieveSubSet()
         overallMktSet1 = a.retrieveOverallMktSet('spy',endDate)
         numberAvailableDays = a.returnNumberOfAvailableOverallMktDays()
 
         if overallMktSet1:
-            # fullSet1a = a.returnFullSet()
-            # subSet1a = a.returnSubSet1()
             overallMktSet1a = a.returnOverallMktSet1()
             print("b===================================")
             return overallMktSet1a
         else:
             print('{0} not in database'.format(i))
             print()
-
 
 if __name__ == '__main__': main('aapl')
 
